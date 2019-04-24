@@ -510,7 +510,7 @@ version 2005/12/01 or later.
   \PassOptionsToPackage{sort&compress}{natbib}
 \fi
 \RequirePackage{natbib}
-\RequirePackage{etoolbox}
+\RequirePackage{ctexhook}
 \RequirePackage{url}
 %    \end{macrocode}
 %
@@ -571,10 +571,8 @@ version 2005/12/01 or later.
 % 下面修改 \pkg{natbib} 的引用格式，主要是将页码写在上标位置。
 % Numerical 模式的 \cs{citet} 的页码：
 %    \begin{macrocode}
-\newcommand\gbt@patchfailure[1]{%
-  \PackageError{gbt7714}{Failed to patch command \protect#1}{}%
-}
-\patchcmd{\NAT@citexnum}{%
+\newcommand\gbt@patchcmd{\csname ctex_patch_cmd:Nnn\endcsname}
+\gbt@patchcmd{\NAT@citexnum}{%
   \@ifnum{\NAT@ctype=\z@}{%
     \if*#2*\else\NAT@cmt#2\fi
   }{}%
@@ -584,7 +582,7 @@ version 2005/12/01 or later.
   \@ifnum{\NAT@ctype=\z@}{%
     \if*#2*\else\textsuperscript{#2}\fi
   }{}%
-}{}{\gbt@patchfailure{\NAT@citexnum}}
+}
 %    \end{macrocode}
 %
 % Numerical 模式的 \cs{citep} 的页码：
@@ -597,13 +595,13 @@ version 2005/12/01 or later.
 %
 % Author-year 模式的 \cs{citet} 的页码：
 %    \begin{macrocode}
-\patchcmd{\NAT@citex}{%
+\gbt@patchcmd{\NAT@citex}{%
   \if*#2*\else\NAT@cmt#2\fi
   \if\relax\NAT@date\relax\else\NAT@@close\fi
 }{%
   \if\relax\NAT@date\relax\else\NAT@@close\fi
   \if*#2*\else\textsuperscript{#2}\fi
-}{}{\gbt@patchfailure{\NAT@citex}}
+}
 %    \end{macrocode}
 %
 % Author-year 模式的 \cs{citep} 的页码：
@@ -618,7 +616,7 @@ version 2005/12/01 or later.
 % \changes{v1.0.3}{2018/03/29}{顺序编码制连续两个文献引用之间使用连接号}
 % \changes{v1.0.4}{2018/04/12}{页码的连接号由 en dash 改为 hyphen}
 %    \begin{macrocode}
-\patchcmd{\NAT@citexnum}{%
+\gbt@patchcmd{\NAT@citexnum}{%
   \ifx\NAT@last@yr\relax
     \def@NAT@last@yr{\@citea}%
   \else
@@ -626,7 +624,7 @@ version 2005/12/01 or later.
   \fi
 }{%
   \def@NAT@last@yr{-\NAT@penalty}%
-}{}{\gbt@patchfailure{\NAT@citexnum}}
+}
 %    \end{macrocode}
 % \end{macro}
 %
